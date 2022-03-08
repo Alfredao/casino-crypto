@@ -7,7 +7,15 @@ import {
   ErrorFallbackProps,
   useQueryErrorResetBoundary,
 } from "blitz"
-import LoginForm from "app/auth/components/LoginForm"
+
+import "bootstrap/dist/css/bootstrap.min.css"
+import { Web3ReactProvider } from "@web3-react/core"
+import Web3 from "web3"
+import "./style.css"
+
+function getLibrary(provider) {
+  return new Web3(provider)
+}
 
 export default function App({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
@@ -17,14 +25,18 @@ export default function App({ Component, pageProps }: AppProps) {
       FallbackComponent={RootErrorFallback}
       onReset={useQueryErrorResetBoundary().reset}
     >
-      {getLayout(<Component {...pageProps} />)}
+      <Web3ReactProvider getLibrary={getLibrary}>
+        {getLayout(<Component {...pageProps} />)}
+      </Web3ReactProvider>
     </ErrorBoundary>
   )
 }
 
 function RootErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
-    return <LoginForm onSuccess={resetErrorBoundary} />
+    // return <LoginForm onSuccess={resetErrorBoundary} />
+    console.log("authentication error")
+    return <ErrorComponent statusCode={error.statusCode} title="not authenticated" />
   } else if (error instanceof AuthorizationError) {
     return (
       <ErrorComponent

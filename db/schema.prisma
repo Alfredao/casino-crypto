@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
@@ -10,19 +10,29 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// --------------------------------------
+enum Role {
+  ADMIN
+  USER
+}
+
+enum TokenType {
+  RESET_PASSWORD
+}
 
 model User {
-  id             Int      @id @default(autoincrement())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  name           String?
-  email          String   @unique
-  hashedPassword String?
-  role           String   @default("USER")
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String?
+  wallet    String   @unique
+  role      Role     @default(USER)
+  balance   Decimal  @default(0)
+  energy    Int      @default(100)
+  level     Int      @default(1)
 
   tokens   Token[]
   sessions Session[]
+  bets     RouletteBet[]
 }
 
 model Session {
@@ -41,13 +51,11 @@ model Session {
 }
 
 model Token {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   hashedToken String
-  type        String
-  // See note below about TokenType enum
-  // type        TokenType
+  type        TokenType
   expiresAt   DateTime
   sentTo      String
 
@@ -57,9 +65,24 @@ model Token {
   @@unique([hashedToken, type])
 }
 
-// NOTE: It's highly recommended to use an enum for the token type
-//       but enums only work in Postgres.
-//       See: https://blitzjs.com/docs/database-overview#switch-to-postgre-sql
-// enum TokenType {
-//   RESET_PASSWORD
-// }
+model Roulette {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  hash      String
+  date      DateTime @updatedAt
+  number    Int?
+
+  @@unique([hash])
+}
+
+model RouletteBet {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  number    Int
+  chips     Int
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+}

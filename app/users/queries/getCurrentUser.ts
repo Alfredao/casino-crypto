@@ -2,12 +2,14 @@ import { Ctx } from "blitz"
 import db from "db"
 
 export default async function getCurrentUser(_ = null, { session }: Ctx) {
-  if (!session.userId) return null
+  if (!session.wallet) return null
 
-  const user = await db.user.findFirst({
-    where: { id: session.userId },
-    select: { id: true, name: true, email: true, role: true },
+  return await db.user.findFirst({
+    where: {
+      wallet: session.wallet,
+    },
+    //include: {
+    //items: true,
+    //},
   })
-
-  return user
 }
