@@ -36,3 +36,7 @@ export const ROULETTE_DATA = [
   { id: 34, option: "3", style: { backgroundColor: "#F00", textColor: "#FFF" } },
   { id: 35, option: "26", style: { backgroundColor: "#000", textColor: "#FFF" } },
 ]
+
+export const convertIdtoOption = function (id) {
+  return ROULETTE_DATA.find((r) => r.id === id)?.option
+}

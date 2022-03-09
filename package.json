@@ -45,6 +45,7 @@
     "react-custom-roulette": "1.1.8",
     "react-dom": "18.0.0-alpha-5ca4b0433-20211020",
     "react-final-form": "6.5.8",
+    "react-timer-hook": "3.0.5",
     "three": "0.137.5",
     "web3": "1.7.0",
     "zod": "3.11.6"
