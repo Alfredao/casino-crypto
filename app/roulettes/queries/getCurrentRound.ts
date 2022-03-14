@@ -4,8 +4,16 @@ import db from "db"
 export default resolver.pipe(resolver.authorize(), async () => {
   const roulette = await db.roulette.findFirst({
     where: {
-      id: 1,
+      number: null,
+      date: {
+        gt: new Date(),
+      },
     },
+    orderBy: [
+      {
+        date: "asc",
+      },
+    ],
     include: {
       bets: true,
     },

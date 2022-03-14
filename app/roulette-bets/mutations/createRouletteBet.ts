@@ -6,6 +6,7 @@ const CreateRouletteBet = z.object({
   number: z.number(),
   chips: z.number(),
   userId: z.number(),
+  rouletteId: z.number(),
 })
 
 export default resolver.pipe(

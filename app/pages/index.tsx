@@ -31,6 +31,9 @@ const UserInfo = () => {
           onClick={() => {
             router.push({
               pathname: "/roulette",
+              query: {
+                hash: "2a6571da26602a67be14ea8c5ab82349",
+              },
             })
           }}
         >

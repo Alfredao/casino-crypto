@@ -1,12 +1,12 @@
-import { BlitzPage, useMutation, useQuery } from "blitz"
+import { BlitzPage, useMutation, useParam, useQuery, useRouterQuery } from "blitz"
 import Layout from "app/core/layouts/Layout"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Wheel } from "react-custom-roulette"
 import { Field, Form } from "react-final-form"
-import { ROULETTE_DATA, convertIdtoOption } from "./rouletteData"
+import { convertIdtoOption, ROULETTE_DATA } from "./rouletteData"
 import { useTimer } from "react-timer-hook"
 import placeBet from "../../roulette-bets/mutations/placeBet"
-import getCurrentRound from "../../roulettes/queries/getCurrentRound"
+import getRouletteByHash from "../../roulettes/queries/getRouletteByHash"
 
 function TimerCountdown({ expiryTimestamp }) {
   const { seconds, minutes, hours, days, isRunning } = useTimer({
@@ -28,8 +28,10 @@ function TimerCountdown({ expiryTimestamp }) {
 }
 
 const RoulettePage: BlitzPage = () => {
-  const [roulette] = useQuery(getCurrentRound, {})
+  const query = useRouterQuery()
+  const [roulette] = useQuery(getRouletteByHash, { hash: query.hash?.toString() })
   const [mustSpin, setMustSpin] = useState(false)
+  const [hasSpinned, setSpinned] = useState(false)
   const [prizeNumber, setPrizeNumber] = useState(0)
   const [placeBetMutation] = useMutation(placeBet)
 
@@ -50,6 +52,17 @@ const RoulettePage: BlitzPage = () => {
       })
       .catch((e) => alert(e))
   }
+
+  useEffect(() => {
+    if (roulette.number) {
+      setPrizeNumber(roulette.number)
+
+      if (!hasSpinned) {
+        setMustSpin(true)
+        setSpinned(true)
+      }
+    }
+  }, [roulette])
 
   return (
     <>
