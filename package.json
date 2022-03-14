@@ -2,7 +2,7 @@
   "name": "cryptocity",
   "version": "1.0.0",
   "scripts": {
-    "dev": "blitz dev",
+    "dev": "concurrently --raw \"blitz dev\" 'quirrel'",
     "build": "blitz build",
     "start": "blitz start",
     "start:production": "blitz start --port $PORT",
@@ -40,6 +40,7 @@
     "crypto-js": "4.1.1",
     "final-form": "4.20.6",
     "luxon": "2.3.0",
+    "quirrel": "1.x",
     "react": "18.0.0-beta-149b420f6-20211119",
     "react-bootstrap": "2.1.2",
     "react-custom-roulette": "1.1.8",
@@ -53,6 +54,7 @@
   "devDependencies": {
     "@types/preview-email": "2.0.1",
     "@types/react": "17.0.39",
+    "concurrently": "6.x",
     "eslint": "7.32.0",
     "husky": "7.0.4",
     "lint-staged": "11.3.0-beta.2",
